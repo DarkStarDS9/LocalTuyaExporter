@@ -1,0 +1,16 @@
+{
+  "TuyaDevices": [
+    {
+      "Ip": "192.168.1.100",
+      "Id": "your-device-id-1",
+      "Key": "your-local-key-1",
+      "Name": "Living Room Light"
+    },
+    {
+      "Ip": "192.168.1.101",
+      "Id": "your-device-id-2",
+      "Key": "your-local-key-2",
+      "Name": "Bedroom Fan"
+    }
+  ]
+}
