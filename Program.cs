@@ -50,6 +50,9 @@ namespace LocalTuyaExporter
                             if (dpValue.HasValue)
                             {
                                 DpsValueGauge.WithLabels(device.Name, dpKey).Set(dpValue.Value);
+                                
+                                // Track published DPS keys
+                                device.PublishedDpsKeys.Add(dpKey);
                             }
                             else
                             {
@@ -61,6 +64,13 @@ namespace LocalTuyaExporter
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Error getting DPS for device {device.Id}: {ex.Message}");
+                        
+                        // Unpublish all metrics for this device
+                        foreach (var dpKey in device.PublishedDpsKeys)
+                        {
+                            DpsValueGauge.WithLabels(device.Name, dpKey).Unpublish();
+                        }
+                        device.PublishedDpsKeys.Clear();
                     }
                 }
                 Thread.Sleep(5000);

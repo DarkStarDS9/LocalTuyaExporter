@@ -15,5 +15,8 @@ namespace LocalTuyaExporter
 
         [JsonIgnore]
         public HashSet<string> DpsBlacklist { get; } = [];
+
+        [JsonIgnore]
+        public HashSet<string> PublishedDpsKeys { get; } = [];
     }
 }
