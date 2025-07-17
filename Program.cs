@@ -26,11 +26,12 @@ namespace LocalTuyaExporter
 
             while (true)
             {
-                foreach (var device in devices)
+                // Create tasks for each device to query in parallel
+                var tasks = devices.Select(async device =>
                 {
                     try
                     {
-                        var dps = await (device.TuyaDevice ?? throw new InvalidOperationException("TuyaDevice is null?!")).GetDpsAsync();
+                        var dps = await (device.TuyaDevice ?? throw new InvalidOperationException("TuyaDevice is null?!")).GetDpsAsync(overrideRecvTimeout:4000);
                        
                         foreach (var dp in dps.Where(dp => !device.DpsBlacklist.Contains(dp.Key.ToString())))
                         {
@@ -72,8 +73,15 @@ namespace LocalTuyaExporter
                         }
                         device.PublishedDpsKeys.Clear();
                     }
-                }
-                Thread.Sleep(5000);
+                }).ToArray();
+
+                // Wait for all tasks to complete
+                await Task.WhenAll(tasks);
+                
+                // Wait until the next 5-second interval (using UTC to avoid DST issues)
+                var now = DateTime.UtcNow;
+                var waitMs = (5 - (now.Second % 5)) * 1000 - now.Millisecond;
+                if (waitMs > 0) await Task.Delay(waitMs);
             }
         }
     }
