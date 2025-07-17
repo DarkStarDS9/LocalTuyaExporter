@@ -1,0 +1,8 @@
+[
+  {
+    "Ip": "192.168.1.2",
+    "Id": "deviceid1234567890",
+    "Key": "secretkey123",
+    "Name": "Friendly Device Name"
+  }
+]
